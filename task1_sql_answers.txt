@@ -1,0 +1,35 @@
+Question 1: How much is each member borrowing?
+SELECT m.member_id, m.first_name, COUNT(c.checkout_id) AS total_borrowed
+FROM members m
+LEFT JOIN checkouts c ON m.member_id = c.member_id
+GROUP BY m.member_id;
+
+Question 2: Which books match a chosen author pattern? (Pattern: 'S%')
+SELECT * FROM books WHERE author LIKE 'S%';
+
+Question 3: What are the most popular books?
+SELECT b.title, COUNT(c.checkout_id) AS checkout_count
+FROM books b
+JOIN checkouts c ON b.book_id = c.book_id
+GROUP BY b.book_id
+ORDER BY checkout_count DESC
+LIMIT 5;
+
+Question 4: Who are the most active readers?
+SELECT m.member_id, m.first_name, COUNT(c.checkout_id) AS checkout_count
+FROM members m
+JOIN checkouts c ON m.member_id = c.member_id
+GROUP BY m.member_id
+ORDER BY checkout_count DESC
+LIMIT 10;
+
+Question 5: What does a neighborhood's activity look like further back in time? (Neighborhood: Zamalek)
+SELECT c.*
+FROM checkouts c
+JOIN members m ON c.member_id = m.member_id
+WHERE m.neighborhood = 'Zamalek'
+ORDER BY c.checkout_date DESC
+LIMIT 10 OFFSET 10;
+
+Web Page vs. API Reflection
+A web page is built for human viewing, meaning its layout, styling, and structural HTML tags can change unpredictably. When pulling data from an HTML page (like the Reading Kickoff signups), the data is semi-structured, requiring tools like pd.read_html to extract tables and manual cleaning to match database schemas. An API is built specifically for machine-to-machine communication, delivering data in a rigid, predictable, and structured format (like JSON) with exact endpoints. This distinction mattered because the Reading Kickoff data lived on an HTML web page rather than a database service, requiring extra transformation steps to align its columns (Member ID, Book ID, Checkout Date) with the database before merging.
